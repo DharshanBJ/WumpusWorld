@@ -21,19 +21,100 @@ import java.util.*;
 //git push test
 public class MyAI extends Agent
 {
-	Stack<Action> s=new Stack<Action>();
-	Stack<Action> sv=new Stack<Action>();
-	Stack<Action> toCheck = new Stack<Action>();
-	Stack<Action> toCheckVertical = new Stack<Action>();
+	Stack<Action> s=new Stack<>();
+	Stack<Action> sv=new Stack<>();
+	Stack<Action> toCheck = new Stack<>();
+	Stack<Action> toCheckVertical = new Stack<>();
+	Stack<Action> toCheckTop = new Stack<>();
+	Stack<Action> toCheckBottom = new Stack<>();
+	//Stack<Action> st=new Stack<Action>();
 	boolean horizontal=false;
 	boolean vertical=false;
 	int toReturn=0;
 	boolean goldFound=false;
+	boolean top=false;
+	boolean bottom=false;
 
+	public Action callBottom(boolean stench, boolean breeze, boolean glitter, boolean bump, boolean scream)
+	{
+//		if(bottom==true){
+//			return callBottom(stench, breeze, glitter, bump, scream);
+//		}
 
+		//System.out.println("Reached bottom");
+		if(toCheckBottom.isEmpty()==false)
+		{
+			//System.out.println("Vertical - returning..."+toCheckVertical.peek());
+			return toCheckBottom.pop();
+		}
+
+		else if(glitter == true)
+		{
+			//System.out.println("In vertical/..gold found");
+			sv.push(Action.TURN_LEFT);
+			sv.push(Action.TURN_LEFT);
+			toCheckBottom =(Stack<Action>)sv.clone();
+			return Action.GRAB;
+		}
+		else if(stench == true || breeze==true ||bump==true )
+		{
+			//System.out.println("In vertical...stench or breeze or bump found");
+			sv.push(Action.TURN_LEFT);
+			toCheckBottom =(Stack<Action>)sv.clone();
+
+			return (Action.TURN_LEFT);
+		}
+
+		//System.out.println("In vertical...moving forward");
+		sv.push(Action.FORWARD);
+		return Action.FORWARD;
+
+	}
+
+	public Action callTop(boolean stench, boolean breeze, boolean glitter, boolean bump, boolean scream)
+	{
+		//System.out.println("Reached top");
+		if(bottom==true){
+			return callBottom(stench, breeze, glitter, bump, scream);
+		}
+		if(toCheckTop.isEmpty()==false)
+		{
+			//System.out.println("Vertical - returning..."+toCheckVertical.peek());
+			return toCheckTop.pop();
+		}
+		else if(glitter == true)
+		{
+			//System.out.println("In vertical/..gold found");
+			sv.push(Action.TURN_LEFT);
+			sv.push(Action.TURN_LEFT);
+			toCheckTop =(Stack<Action>)sv.clone();
+			return Action.GRAB;
+		}
+		else if(stench == true || breeze==true )
+		{
+			//System.out.println("In vertical...stench or breeze or bump found");
+			sv.push(Action.TURN_LEFT);
+			toCheckTop =(Stack<Action>)sv.clone();
+
+			return (Action.TURN_LEFT);
+		}
+ 		else if(bump==true)
+		{
+			bottom=true;
+			sv.push(Action.TURN_LEFT);
+			return Action.TURN_RIGHT;
+		}
+		//System.out.println("In vertical...moving forward");
+		sv.push(Action.FORWARD);
+		return Action.FORWARD;
+
+	}
 
 	public Action callVertical(boolean stench, boolean breeze, boolean glitter, boolean bump, boolean scream)
 	{
+		if(top==true){
+			return callTop(stench, breeze, glitter, bump, scream);
+		}
 		if(toCheckVertical.isEmpty()==false)
 		{
 			//System.out.println("Vertical - returning..."+toCheckVertical.peek());
@@ -47,13 +128,18 @@ public class MyAI extends Agent
 			toCheckVertical =(Stack<Action>)sv.clone();
 			return Action.GRAB;
 		}
-		else if(stench == true || breeze==true || bump==true)
+		else if(stench == true || breeze==true )
 		{
 			//System.out.println("In vertical...stench or breeze or bump found");
 			sv.push(Action.TURN_LEFT);
 			toCheckVertical =(Stack<Action>)sv.clone();
 
 			return (Action.TURN_LEFT);
+		}else if(bump==true)
+		{
+			top=true;
+			sv.push(Action.TURN_LEFT);
+			return Action.TURN_RIGHT;
 		}
 		//System.out.println("In vertical...moving forward");
 		sv.push(Action.FORWARD);
