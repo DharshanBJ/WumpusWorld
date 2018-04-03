@@ -200,10 +200,13 @@ public class Main
 				try
 				{
 					World world = new World ( debug, randomAI, manualAI, listOfWorlds[worldIndex] );
+
 					score = world.run();
+					System.out.println("Score: "+score+" File: "+listOfWorlds[worldIndex]);
 				}
 				catch ( Exception e )
 				{
+					//System.out.println(" File: "+listOfWorlds[worldIndex]);
 					numOfScores = 0;
 					sumOfScores = 0;
 					sumOfScoresSquared = 0;
